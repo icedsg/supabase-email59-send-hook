@@ -58,7 +58,9 @@ Or sign in at [email59.com/account.html](https://email59.com/account.html) and c
    ```
 
    The answer has a `url` like `https://email59.com/v1/hooks/supabase/sbh_...`.
-3. Paste that URL into the Supabase hook and save. Sign up with a test address.
+3. Paste that URL into the Supabase hook and save.
+4. Under **Authentication → Rate Limits**, raise the email limit. It becomes adjustable once a hook (or custom
+   SMTP) is in place. Sign up with a test address.
 
 `GET /v1/hooks/supabase` lists your hooks with a call count. `DELETE /v1/hooks/supabase/{id}` turns one off; the
 URL stops working at once. Details: [email59 docs, Supabase auth emails](https://email59.com/docs.html#supabase).
@@ -148,7 +150,21 @@ The link in that email is a dummy; the point is to see it arrive.
   `send()` to your provider, or switch Supabase to custom SMTP; nothing else here is email59-specific.
 - **There is a free daily allowance** and credits after that, with no subscription. The current numbers are on the
   [pricing page](https://email59.com/pricing.html). If a launch could bring more sign-ups in a day than the
-  allowance covers, sort that out before you post the link.
+  allowance covers, sort that out before you post the link. Today the allowance is 200 emails a day; accounts made
+  through the API start at 50 a day until they've signed in on the website (or paid, or built up a week of use).
+- **The email text is fixed on the hosted hook** (your app name in the subject, a button, the code). For your own
+  wording, use the Edge Function.
+
+## What email59 sees and keeps
+
+Your users' auth codes and verify links pass through email59 and its sending provider, as they would through any
+hook or SMTP provider.
+
+- The message log keeps the recipient address and the subject of each email, not the body, the code or the link.
+- Hosted hook only: the hook secret is stored at email59 so it can check Supabase's signature.
+  `DELETE /v1/hooks/supabase/{id}` turns the URL off at once. With the Edge Function the secret stays in your
+  Supabase project.
+- The email59 service itself is closed source; this function is the public part.
 - **Links go through your project's `/auth/v1/verify`**, the same as Supabase's own emails, so your redirect URLs
   and allow-list work unchanged.
 
