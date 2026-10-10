@@ -1,0 +1,12 @@
+{
+  "name": "supabase-email59-send-hook",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}
